@@ -1,7 +1,7 @@
 # Тестовое задание
 
-* Собрать
+1 Собрать
 * mvn clean package
 
-* Запустить docker-compose
+2 Запустить docker-compose
 * docker-compose up --build -d
