@@ -1,7 +1,6 @@
-# Тестовое задание
+# Тестовое задание на вакансию стажера
 
-1 Собрать
-* mvn clean package
+* Шаги запуска сервиса:
 
-2 Запустить docker-compose
-* docker-compose up --build -d
+1 Собрать mvn clean package
+2 Запустить docker-compose docker-compose up --build -d
