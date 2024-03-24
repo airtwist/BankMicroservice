@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@Tag( name = "Транзакции",
-        description = "Проведение транзакций и возможность получить список транзаций превысевших лимит"
+@Tag( name = "Транзакции (Client API)",
+        description = "Возможность получить список транзаций превысевших лимит"
 )
 @RequiredArgsConstructor
 @RestController

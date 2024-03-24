@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag( name = "Транзакции",
-        description = ""
+@Tag( name = "Транзакции (Integration API)",
+        description = "Создание транзакций"
 )
 @RequiredArgsConstructor
 @RestController
