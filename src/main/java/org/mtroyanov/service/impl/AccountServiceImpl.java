@@ -3,7 +3,7 @@ package org.mtroyanov.service.impl;
 import org.mtroyanov.dto.CreateAccountDto;
 import org.mtroyanov.dto.LimitDto;
 import org.mtroyanov.entity.Account;
-import org.mtroyanov.entity.Category;
+import org.mtroyanov.entity.id.Category;
 import org.mtroyanov.repository.AccountRepository;
 import org.mtroyanov.service.AccountService;
 import org.mtroyanov.service.LimitService;

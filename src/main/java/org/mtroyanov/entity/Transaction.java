@@ -1,6 +1,7 @@
 package org.mtroyanov.entity;
 
 
+import org.mtroyanov.entity.id.Category;
 import org.mtroyanov.entity.id.CurrencyId;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -25,20 +29,22 @@ public class Transaction {
     private Long accountTo;
 
     @Column(name = "sum")
-    private BigDecimal transactionSumm;
+    private BigDecimal sum;
 
     @Column(name = "sum_usd")
-    private BigDecimal transactionSumInUsd;
-    @Column(name = "expense_category")
+    private BigDecimal sumUsd;
+
+    @Column(name = "category")
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @Column(name = "exceeded_limit_id")
     private Long exceededLimitId;
+
     @ManyToOne
-    @JoinColumn(name = "exceeded_limit_id" ,referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "exceeded_limit_id", referencedColumnName = "id", insertable = false, updatable = false)
     private ExpenseLimit exceededLimit;
-    //Чтобы нам не приходилось доставать Currency из базы данных,
-    //При создании транзакции мы сможем впихнуть CunrrencyId из ENUM
+
     @ManyToOne
     @JoinColumn(name = "currency_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Currency currency;
@@ -47,7 +53,18 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private CurrencyId currencyId;
 
-    @Column(name = "datetime", columnDefinition = "DATETIME")
-    private OffsetDateTime dateTime;
+    @Column(name = "date_time", columnDefinition = "DATETIME")
+    private LocalDateTime dateTime;
 
+    @Column(name = "timezone")
+    private String timezone;
+
+    public void setZoneDateTime(OffsetDateTime dateTime) {
+        this.dateTime = dateTime.toLocalDateTime();
+        this.timezone = dateTime.getOffset().toString();
+    }
+
+    public OffsetDateTime getZoneDateTime() {
+        return dateTime.atZone(ZoneId.of(timezone)).toOffsetDateTime();
+    }
 }

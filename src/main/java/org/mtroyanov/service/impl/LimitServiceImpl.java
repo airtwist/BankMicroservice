@@ -19,7 +19,7 @@ public class LimitServiceImpl implements LimitService {
     public ExpenseLimit updateLimit(Long accountId, LimitDto limitDto) {
         ExpenseLimit newExpenseLimit = new ExpenseLimit();
         newExpenseLimit.setAmount(limitDto.getAmount());
-        newExpenseLimit.setDateTime(OffsetDateTime.now(ZoneId.systemDefault()));
+        newExpenseLimit.setZoneDateTime(OffsetDateTime.now(ZoneId.systemDefault()));
         newExpenseLimit.setCategory(limitDto.getCategory());
         newExpenseLimit.setAccountId(accountId);
         return limitRepository.save(newExpenseLimit);

@@ -34,13 +34,16 @@ public class CurrencyRateImpl implements CurrencyService {
         if (currencyId.equals(CurrencyId.USD)) {
             return BigDecimal.ONE;
         }
-        return currencyRepository.findById(currencyId)
-                .orElseGet(() -> updateCurrency(new Currency(currencyId)))
-                .getClose();
+        Currency currency =  currencyRepository.findById(currencyId)
+                .orElseGet(() -> updateCurrency(new Currency(currencyId)));
+        if (currency.getClose()==null){
+            updateCurrency(currency);
+        }
+        return currency.getClose();
     }
 
     private Currency updateCurrency(Currency currency) {
-        CurrencyRate newCurrencyRate = httpClient.getExchangeRate(CurrencyId.USD, currency.getId());
+        CurrencyRate newCurrencyRate = httpClient.getExchangeRate(currency.getId(), CurrencyId.USD );
         currency.setClose(newCurrencyRate.getClose());
         currency.setPreviousClose(newCurrencyRate.getPreviousClose());
         currency.setExchangeDate(newCurrencyRate.getDatetime());

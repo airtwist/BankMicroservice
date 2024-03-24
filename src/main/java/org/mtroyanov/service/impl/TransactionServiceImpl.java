@@ -1,8 +1,9 @@
 package org.mtroyanov.service.impl;
 
+import org.apache.commons.math3.util.Precision;
 import org.mtroyanov.dto.CreateTransactionDto;
 import org.mtroyanov.dto.TransactionDto;
-import org.mtroyanov.entity.Category;
+import org.mtroyanov.entity.id.Category;
 import org.mtroyanov.entity.ExpenseLimit;
 import org.mtroyanov.entity.Transaction;
 import org.mtroyanov.entity.id.CurrencyId;
@@ -14,10 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
@@ -37,7 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction transact(CreateTransactionDto createTransactionDto) {
         CurrencyId currencyId = createTransactionDto.getCurrencyId();
-        BigDecimal sum = createTransactionDto.getSum();
+        BigDecimal sum = createTransactionDto.getSum().setScale(2, RoundingMode.HALF_UP);
         BigDecimal exchangeRate = currencyService.getCurrencyExchangeRate(currencyId);
         Category category = createTransactionDto.getCategory();
         Long accountFromId = createTransactionDto.getAccountFromId();
@@ -45,23 +52,25 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = new Transaction();
         transaction.setAccountFrom(accountFromId);
         transaction.setAccountTo(createTransactionDto.getAccountToId());
-        transaction.setTransactionSumm(sum);
+        transaction.setSum(sum);
         transaction.setCategory(category);
         transaction.setCurrencyId(currencyId);
-        transaction.setTransactionSumInUsd(sum.multiply(exchangeRate));
-        transaction.setDateTime(OffsetDateTime.now(ZoneId.systemDefault()));
+        BigDecimal result = sum.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
+        transaction.setSumUsd(result);
+        transaction.setZoneDateTime(OffsetDateTime.now(ZoneId.systemDefault()));
 
-        OffsetDateTime oneMonthBefore = OffsetDateTime.now().minusMonths(1);
-        BigDecimal transactionSum = transactionRepository.findAllByDateTimeAfterAndCategoryAndAccountFrom(oneMonthBefore, category, accountFromId)
-                .stream()
-                .map(Transaction::getTransactionSumInUsd)
-                .reduce(transaction.getTransactionSumInUsd(), BigDecimal::add);
+        LocalDateTime monthBefore = transaction.getDateTime().minusMonths(1L);
 
-        ExpenseLimit expenseLimit = limitRepository.getExpenseLimitByAccountIdAndCategory(accountFromId, category);
+        BigDecimal transactionSum = transactionRepository.findAllByDateTimeAfterAndCategoryAndAccountFrom(monthBefore, category, accountFromId).stream()
+                .map(Transaction::getSumUsd)
+                .reduce(transaction.getSumUsd(), BigDecimal::add);
+
+        ExpenseLimit expenseLimit = limitRepository.findFirstByAccountIdAndCategoryOrderByDateTime(accountFromId, category);
         if (transactionSum.compareTo(expenseLimit.getAmount()) > 0) {
             transaction.setExceededLimitId(expenseLimit.getId());
         }
-        return transactionRepository.save(transaction);
+        transactionRepository.save(transaction);
+        return transaction;
     }
 
     @Override
@@ -73,12 +82,12 @@ public class TransactionServiceImpl implements TransactionService {
             transactionDto.setAccountFromId(limitExceededTransaction.getAccountFrom());
             transactionDto.setAccountToId(limitExceededTransaction.getAccountTo());
             transactionDto.setCurrencyId(limitExceededTransaction.getCurrencyId());
-            transactionDto.setSum(limitExceededTransaction.getTransactionSumm());
+            transactionDto.setSum(limitExceededTransaction.getSum());
             transactionDto.setCategory(limitExceededTransaction.getCategory());
-            transactionDto.setDateTime(limitExceededTransaction.getDateTime());
+            transactionDto.setDateTime(limitExceededTransaction.getZoneDateTime());
             transactionDto.setLimitSum(limitExceededTransaction.getExceededLimit().getAmount());
-            transactionDto.setLimitDateTime(limitExceededTransaction.getExceededLimit().getDateTime());
-            transactionDto.setLimitCurrencyShortname(limitExceededTransaction.getExceededLimit().getCurrencyId());
+            transactionDto.setLimitDateTime(limitExceededTransaction.getExceededLimit().getZoneDateTime());
+            transactionDto.setLimitCurrencyShortname(CurrencyId.USD);
             transactionDtoList.add(transactionDto);
         }
         return transactionDtoList;

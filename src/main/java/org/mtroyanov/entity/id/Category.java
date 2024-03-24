@@ -1,7 +1,6 @@
-package org.mtroyanov.entity;
+package org.mtroyanov.entity.id;
 
 public enum Category {
     PRODUCT,
     SERVICE
-
 }
