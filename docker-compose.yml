@@ -6,7 +6,7 @@ services:
     volumes:
       - ./src/main/resources/application-docker.properties:/app/application.properties
     ports:
-      - "8081:8080"
+      - "8080:8080"
 
   mysql:
     image: mysql

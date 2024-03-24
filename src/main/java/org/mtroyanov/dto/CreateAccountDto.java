@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Schema(description = "Создание аккаунта")
@@ -13,9 +14,6 @@ import java.util.List;
 
 
 public class CreateAccountDto {
-    private List<LimitDto> limits;
+    private List<LimitDto> limits = new ArrayList<>();
 
-    public CreateAccountDto(List<LimitDto> limits) {
-        this.limits = limits;
-    }
 }

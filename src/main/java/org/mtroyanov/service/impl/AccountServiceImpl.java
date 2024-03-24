@@ -23,8 +23,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void createAccount(CreateAccountDto createAccountDto) {
-        Account account = new Account();
-        accountRepository.save(account);
+        Account account = accountRepository.save(new Account());
         for (Category category : Category.values()) {
             LimitDto limitDto = new LimitDto(category, DEFAULT_LIMIT_USD);
             limitService.updateLimit(account.getId(), limitDto);
