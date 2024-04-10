@@ -33,4 +33,9 @@ public class Currency {
         this.id = id;
     }
 
+    public Currency(BigDecimal close, BigDecimal previousClose, LocalDate datetime) {
+        this.close = close;
+        this.previousClose=previousClose;
+        this.exchangeDate = datetime;
+    }
 }

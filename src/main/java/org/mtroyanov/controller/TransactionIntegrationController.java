@@ -19,7 +19,7 @@ public class TransactionIntegrationController {
 
     private final TransactionService transactionService;
 
-    @PutMapping("/create")
+    @PostMapping("/create")
     public void createTransaction(@RequestBody CreateTransactionDto createTransactionDto){
         transactionService.transact(createTransactionDto);
     }

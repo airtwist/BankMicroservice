@@ -59,6 +59,16 @@ public class Transaction {
     @Column(name = "timezone")
     private String timezone;
 
+    public Transaction(Long accountFrom, Long accountTo, BigDecimal sum, BigDecimal sumUsd, Category category, CurrencyId currencyId, OffsetDateTime currentTime) {
+        this.accountFrom = accountFrom;
+        this.accountTo = accountTo;
+        this.sum = sum;
+        this.sumUsd = sumUsd;
+        this.category = category;
+        this.currencyId = currencyId;
+        setZoneDateTime(currentTime);
+    }
+
     public void setZoneDateTime(OffsetDateTime dateTime) {
         this.dateTime = dateTime.toLocalDateTime();
         this.timezone = dateTime.getOffset().toString();

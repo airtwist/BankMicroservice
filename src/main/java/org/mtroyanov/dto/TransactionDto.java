@@ -1,6 +1,7 @@
 package org.mtroyanov.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.mtroyanov.entity.id.Category;
 import org.mtroyanov.entity.id.CurrencyId;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 @Schema(description = "Сохранение транзакций")
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class TransactionDto {
@@ -31,4 +33,6 @@ public class TransactionDto {
     private OffsetDateTime limitDateTime;
     @Schema(description = "Валюта лимита")
     private CurrencyId limitCurrencyShortname;
+
+
 }

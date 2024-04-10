@@ -2,6 +2,8 @@ package org.mtroyanov.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.mtroyanov.dto.CreateAccountDto;
 import org.mtroyanov.service.AccountService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag( name = "Аккаунты",
         description = "Создание аккаунта"
 )
-@RequiredArgsConstructor
+
+@AllArgsConstructor
 @RestController
 @RequestMapping("/client-api/accounts")
 public class AccountController {

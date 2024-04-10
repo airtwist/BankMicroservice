@@ -45,6 +45,13 @@ public class ExpenseLimit {
     @Column(name = "account_id")
     private Long accountId;
 
+    public ExpenseLimit(BigDecimal amount, OffsetDateTime now, Category category, Long accountId) {
+        this.amount = amount;
+        setZoneDateTime(now);
+        this.category = category;
+        this.accountId = accountId;
+    }
+
     public void setZoneDateTime(OffsetDateTime dateTime) {
         this.dateTime = dateTime.toLocalDateTime();
         this.timezone = dateTime.getOffset().toString();

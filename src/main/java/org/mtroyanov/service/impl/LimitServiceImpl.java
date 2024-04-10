@@ -1,10 +1,11 @@
 package org.mtroyanov.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.mtroyanov.dto.LimitDto;
 import org.mtroyanov.entity.ExpenseLimit;
+import org.mtroyanov.mapper.LimitMapper;
 import org.mtroyanov.repository.LimitRepository;
 import org.mtroyanov.service.LimitService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -15,13 +16,10 @@ import java.time.ZoneId;
 public class LimitServiceImpl implements LimitService {
 
     private final LimitRepository limitRepository;
+
     @Override
     public ExpenseLimit updateLimit(Long accountId, LimitDto limitDto) {
-        ExpenseLimit newExpenseLimit = new ExpenseLimit();
-        newExpenseLimit.setAmount(limitDto.getAmount());
-        newExpenseLimit.setZoneDateTime(OffsetDateTime.now(ZoneId.systemDefault()));
-        newExpenseLimit.setCategory(limitDto.getCategory());
-        newExpenseLimit.setAccountId(accountId);
-        return limitRepository.save(newExpenseLimit);
+        return limitRepository.save(LimitMapper.mapToExpenseLimit(limitDto,accountId));
     }
+
 }

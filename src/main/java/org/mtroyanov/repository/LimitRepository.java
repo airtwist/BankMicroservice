@@ -8,4 +8,6 @@ public interface LimitRepository extends JpaRepository<ExpenseLimit, Long> {
 
     ExpenseLimit findFirstByAccountIdAndCategoryOrderByDateTime(Long accountId, Category category);
 
+
+
 }
